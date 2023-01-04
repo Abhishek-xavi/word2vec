@@ -1,0 +1,4 @@
+1. Bias, Variance and prediction error
+2. Model Selection and Regularization
+3. For classification - methods to analyse the model - accuracy, precision, recall
+4. Single and multi layer network. Stochastic gradient descent
