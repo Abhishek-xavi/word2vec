@@ -14,6 +14,8 @@ undertsnading word2vec from basic without NCE
 https://towardsdatascience.com/word2vec-from-scratch-with-numpy-8786ddd49e72
 word2vec with negative skipgram
 https://towardsdatascience.com/what-does-word2vec-actually-learn-489f3f950388
+generate word embed
+http://projector.tensorflow.org
 
 References
 1. https://towardsdatascience.com/word2vec-explained-49c52b4ccb71

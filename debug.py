@@ -86,7 +86,7 @@ def generate_training_data(sequences, window_size, num_ns, vocab_size, seed):
 ##  MAin Code #######
 #########################
 
-def callMyWord2Vec(lines, window_size, embedding_dim, num_ns, sequence_length, vocab_size):
+def callMyWord2Vec(lines, window_size, embedding_dim, num_ns, sequence_length, vocab_size, optimizer):
 
   text_ds = tf.data.Dataset.from_tensor_slices(lines)
   # text_ds = tf.data.Dataset.from_tensor_slices(lines).filter(lambda x: tf.cast(tf.strings.length(x), bool))
@@ -227,7 +227,7 @@ def callMyWord2Vec(lines, window_size, embedding_dim, num_ns, sequence_length, v
 
 
   word2vec = Word2Vec(vocab_size, embedding_dim)
-  word2vec.compile(optimizer='adam',
+  word2vec.compile(optimizer=optimizer,
                    loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
                    metrics=['accuracy'])
 
@@ -268,8 +268,9 @@ analysis = {'WindowSize': [],
 
 #Negative sampling
 num_ns=[2]
-window_size = [3]
-embedding_dim = [128]
+window_size = [5]
+embedding_dim = [64]
+optimizers = ['SGD', 'Adagrad', 'RMSprop', 'Adam']
 vocab_size = 0
 
 path_to_file = tf.keras.utils.get_file('shakespeare.txt', 'https://storage.googleapis.com/download.tensorflow.org/data/shakespeare.txt')
@@ -323,23 +324,24 @@ for a in count_words.keys():
 for ns in num_ns:
   for window in window_size:
     for embedding in embedding_dim:
-      analysis['VocabSize'].append(vocab_size)
-      analysis['SeqLen'].append(sequence_length)
-      analysis['NegativeSample'].append(ns)
-      analysis['WindowSize'].append(window)
-      analysis['EmbedDimen'].append(embedding)
+      for optimizer in optimizers:
+        analysis['VocabSize'].append(vocab_size)
+        analysis['SeqLen'].append(sequence_length)
+        analysis['NegativeSample'].append(ns)
+        analysis['WindowSize'].append(window)
+        analysis['EmbedDimen'].append(embedding)
 
-      param_shakes = callMyWord2Vec(lines, window, embedding, ns, sequence_length, vocab_size)
+        param_shakes = callMyWord2Vec(lines, window, embedding, ns, sequence_length, vocab_size, optimizer)
 
-      analysis['AccuracyTrain'].append(param_shakes[0])
-      analysis['LossTrain'].append(param_shakes[1])
-      analysis['RunTime'].append(param_shakes[2])
-      analysis['TrainingDataSize'].append(param_shakes[3])
-      analysis['AccuracyTest'].append(param_shakes[4])
-      analysis['LossTest'].append(param_shakes[5])
+        analysis['AccuracyTrain'].append(param_shakes[0])
+        analysis['LossTrain'].append(param_shakes[1])
+        analysis['RunTime'].append(param_shakes[2])
+        analysis['TrainingDataSize'].append(param_shakes[3])
+        analysis['AccuracyTest'].append(param_shakes[4])
+        analysis['LossTest'].append(param_shakes[5])
 
 
-analysisDF = pd.DataFrame(analysis)
+ analysisDF = pd.DataFrame(analysis)
 analysisDF.to_csv('Text3.csv')
 print('Done')
        
